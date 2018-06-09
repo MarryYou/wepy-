@@ -1,0 +1,256 @@
+<style lang="less">
+.board{
+ width: 100%;
+ background: #fff;
+ display: flex;
+ height: 80rpx;
+}
+.board_item{
+ flex: 3;
+ padding: 20rpx 10rpx 10rpx 10rpx;
+}
+.board_item_text{
+  font-size: 28rpx;
+  color: #333;
+}
+.scroll-view_H{
+  white-space: nowrap;
+  background: #fff;
+}
+.scroll-view-item{
+  height: 300rpx;
+}
+.scroll-view-item_H{
+  display: inline-block;
+  width: 18%;
+  height: 60rpx;
+  padding: 20rpx;
+  line-height: 56rpx;
+  font-size: 40rpx;
+}
+.nav_checked_flag {
+ color: chocolate;
+ position: relative;
+ &::after{
+   content:' ';
+   position:absolute;
+   left: 50%;
+   margin-left: -38%;
+   bottom: 15rpx;
+   width: 45%;
+   height: 4rpx;
+   background: chocolate;
+ }
+}
+.product{
+  margin-top: 14rpx;
+  margin-bottom: 300rpx;
+}
+.brand{
+  background: #fff;
+  height:700rpx;
+}
+.brand_tit{
+  text-align: center;
+  padding: 20rpx  10rpx 10rpx 10rpx;
+  color: #333;
+  font-size: 34rpx;
+}
+.brand_icon{
+  font-size: 36rpx;
+  line-height: 40rpx;
+  margin-left: 10rpx;
+  color: brown;
+}
+.brand_card{
+  display: flex;
+  flex-wrap: wrap;
+  height: 600rpx;
+}
+.scroll_product{
+  background: #fff;
+  padding-bottom:20rpx; 
+}
+.scroll_product_card{
+  white-space: nowrap;
+}
+.scroll_product_card_H{
+  display: inline-block;
+  width: 70%;
+  height: 510rpx;
+}
+.scroll_product_card_in{
+  width: 100%;
+  height: 100%;
+  border: 10rpx solid #f4f4f4;
+  overflow: hidden;
+}
+.scroll_product_card_in_pic{
+  height: 360rpx;
+}
+.scroll_product_card_in_desc{
+  width: 100%;
+  height: 100rpx;
+  padding: 20rpx;
+  .tit{
+   display: block;
+   color: #333;
+   font-size: 30rpx;
+   line-height: 45rpx;
+  }
+  .subtit{
+    display: block;
+    color: #555;
+   font-size: 24rpx;
+   line-height: 35rpx;
+  }
+  .price{
+    display: block;
+    color:crimson;
+   font-size: 24rpx;
+   line-height: 35rpx;
+  }
+}
+</style>
+<template>
+  <view class="container"  style="height:{{systemInfo.windowHeight}}px;overflow:hidden;">
+    <scroll-view class="scroll-view_H" scroll-x="true" style="width: 100%">
+      <view  wx:for="{{categoryList}}" data-opt="{{item.anchor}}" data-navInfo="{{item}}" data-index="{{index}}" bindtap='navTo' wx:key="index" class="scroll-view-item_H {{item.color_flag ?'nav_checked_flag':''}} ">{{item.name}}</view> 
+    </scroll-view>
+<scroll-view  scroll-y="true" style="height:100%;flex:1;" scroll-with-animation="true"  scroll-into-view="{{toView}}">
+    <banner :banner.sync="bannerList"/>
+    <view class="board">
+      <view wx:for="{{boardText}}" wx:key="index"  class="board_item"><icon class="board_item_icon" type="success" size="{{iconSize}}" color="red"/><text class="board_item_text">{{item}}</text></view>    
+    </view>
+     <view class="product" >
+      <view class="brand">
+      <view  class="brand_tit"><text>品牌制造商直供</text><i class="iconfont icon-baokuan- brand_icon"></i></view>
+      <view class="brand_card">
+        <repeat for="{{brandList}}" key="index" index="index" item="item">
+        <card_brand :item.sync="item"></card_brand>
+       </repeat>
+      </view>
+      </view>
+      <view class="scroll_product">
+      <view  class="brand_tit"><text>人气推荐商品</text><i class="iconfont icon-up brand_icon"></i></view>
+      <scroll-view class="scroll_product_card" scroll-x="true" style="width: 100%">
+      <view  wx:for="{{hotGoodsList}}"  wx:key="index" class="scroll_product_card_H ">
+        <view class="scroll_product_card_in">
+          <image class="scroll_product_card_in_pic" src='{{item.list_pic_url}}' mode='aspectFill'/>
+           <view class="scroll_product_card_in_desc">
+             <text class="tit">{{item.name}}</text>
+             <text class="subtit">{{item.goods_brief}}</text>
+             <text class="price">￥{{item.retail_price}}</text>
+           </view>
+        </view>
+      </view> 
+       </scroll-view>
+      </view>
+     <view class="scroll_product">
+      <view  class="brand_tit"><text>全球首发商品</text><i class="iconfont icon-fanli brand_icon"></i></view>
+      <scroll-view class="scroll_product_card" scroll-x="true" style="width: 100%">
+      <view  wx:for="{{newGoodsList}}"  wx:key="index" class="scroll_product_card_H ">
+        <view class="scroll_product_card_in">
+          <image class="scroll_product_card_in_pic" src='{{item.list_pic_url}}' mode='aspectFill'/>
+           <view class="scroll_product_card_in_desc">
+             <text class="tit">{{item.name}}</text>
+             <text class="price">￥{{item.retail_price}}</text>
+           </view>
+        </view>
+      </view> 
+       </scroll-view>
+      </view>
+     </view>
+</scroll-view>
+  </view>
+</template>
+
+<script>  
+  import banner from './../components/banner'
+  import nav from './../components/nav'
+  import card_brand from './../components/card_brand'
+  import wepy from 'wepy'
+  import axios from './../common/axios'
+  import url from './../common/api'
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'wepy网易严选app'
+    }
+
+    components = {
+      banner:banner,
+      nav:nav,
+      card_brand:card_brand
+    }
+    data = {
+      toView:'ess',
+      bannerList:url.bannerImage,
+      brandList:[],
+      systemInfo:{},
+      iconSize:0,
+      categoryList:[{'id':10000,'name':'推荐','goodList':[],'color_flag':true,'anchor':'L0'}],
+      hotGoodsList:[],
+      newGoodsList:[],
+      topicList:[],
+      boardText:[
+        '网易自营品牌',
+        '30天无忧退货',
+        '48小时快速退款'
+      ]
+    }
+
+    computed = {
+
+    }
+
+    methods = {
+       navTo(e){
+         let index = e.currentTarget.dataset.index;
+         this.categoryList.forEach((element,sIndex) => {
+           if(sIndex == index){
+           element.color_flag = true;
+           }else{
+           element.color_flag = false;
+           }
+         });
+         this.toView = e.currentTarget.dataset.opt;
+         this.$apply();
+       }
+       
+    }
+
+    events = {
+
+    }
+    onReady(){
+     axios.get(url.IndexUrl).then(function(res) {
+       try {
+        wx.setStorageSync('indexData', JSON.stringify(res.data.data));
+        wx.setStorageSync('systemInfo', JSON.stringify( wx.getSystemInfoSync()));
+       } catch (error) {        
+      }
+     
+    });
+     }
+    onLoad() {
+    try {
+       let indexResult = JSON.parse(wx.getStorageSync('indexData'));
+       let systemInfo  = JSON.parse(wx.getStorageSync('systemInfo'));
+       indexResult.categoryList.forEach((element,index) => {
+         element.color_flag = false;
+         element.anchor = 'L'+(index +1);
+       });
+       this.brandList = indexResult.brandList;
+       this.systemInfo = systemInfo;
+       this.categoryList = this.categoryList.concat(indexResult.categoryList);
+       this.hotGoodsList = indexResult.hotGoodsList;
+       this.newGoodsList = indexResult.newGoodsList;
+       this.topicList = indexResult.topicList;
+       this.iconSize =Math.round((this.systemInfo.windowWidth / 750) * 26);
+       this.$apply();
+    } catch (error) {
+      
+    }
+    }
+  }
+</script>

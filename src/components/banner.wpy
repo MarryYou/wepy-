@@ -1,0 +1,49 @@
+<style lang="less">
+.Slider{
+    background: #fff;
+    width: 100%;
+    height: 420rpx;
+.SliderItem{
+    width: 100%;
+    height: 100%;
+}
+}
+</style>
+<template>
+    <swiper id="L0"  class="Slider" indicator-dots="true" indicator-color="rgba(255,255,255,1)" indicator-active-color="#eeeeee"
+     autoplay="true" interval="5000" duration="700" circular="true">
+        <block wx:for="{{banner}}" wx:key="index">
+      <swiper-item>
+          <image src="{{item}}" class="SliderItem">
+      </swiper-item>
+        </block>
+    </swiper>
+</template>
+<script>
+  import wepy from 'wepy'
+  export default class Banner extends wepy.component {
+    props = {
+    banner:{
+        type:Array,
+        default:[],
+        twoWay:true
+    }
+    }
+
+    data = {
+    }
+    events = {
+    
+    }
+
+    watch = {
+     
+    }
+
+    methods = {
+     
+  }
+  onLoad(){
+  }
+  }
+</script>

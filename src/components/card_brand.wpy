@@ -1,0 +1,70 @@
+<style lang="less">
+.card_brand{
+    width: 50%;
+    height: 300rpx;
+    overflow: hidden;
+    background: #f4f4f4;
+    box-sizing: border-box;
+    border-top: 5rpx solid #fff;
+    border-left: 5rpx solid #fff;
+    border-right: 5rpx solid #fff;
+    position: relative;
+}
+.card_brand_bg{
+  height:100%;
+  width: 100%;
+  background: #f4f4f4;
+}
+.card_brand_desc{
+  position: absolute;
+  top: 20rpx;
+  left: 10rpx;
+}
+.card_brand_desc_tit{
+  display: block;
+  color: #777;
+  padding: 5rpx 10rpx;
+  font-size: 34rpx;
+}
+.card_brand_desc_price{
+  display: block;
+  padding: 0 10rpx;
+  font-size: 28rpx;
+  color: #777;
+}
+</style>
+<template>
+<view class="card_brand"> 
+<image class="card_brand_bg" title='{{item.simple_desc}}' src='{{item.new_pic_url}}' />
+<view class="card_brand_desc">
+  <text class="card_brand_desc_tit">{{item.name}}</text>
+  <text class="card_brand_desc_price">{{item.floor_price}}元</text>
+</view>
+</view>
+</template>
+<script>
+  import wepy from 'wepy'
+  export default class Card_brand extends wepy.component {
+    props = {
+        item:{
+          type:Object,
+          default:null
+        }
+    }
+    data = {
+    }
+    events = {
+    
+    }
+
+    watch = {
+     
+    }
+
+    methods = {
+
+  }
+  onLoad(){
+  }
+  }
+</script>
